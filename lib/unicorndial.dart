@@ -84,7 +84,7 @@ class UnicornDialer extends StatefulWidget {
         this.hasBackground = true,
         this.backgroundColor = Colors.white30,
         this.parentHeroTag = "parent",
-        this.finalButtonIcon,
+        required this.finalButtonIcon,
         this.animationDuration = 180,
 		this.mainAnimationDuration = 200,
         this.childPadding = 4.0,
