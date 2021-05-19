@@ -10,22 +10,22 @@ class UnicornButton extends FloatingActionButton {
   final FloatingActionButton currentButton;
   final String labelText;
   final double labelFontSize;
-  final Color labelColor;
-  final Color labelBackgroundColor;
-  final Color labelShadowColor;
+  final Color? labelColor;
+  final Color? labelBackgroundColor;
+  final Color? labelShadowColor;
   final bool labelHasShadow;
   final bool hasLabel;
 
   UnicornButton(
-      {this.currentButton,
-        this.labelText,
+      {required this.currentButton,
+        required this.labelText,
         this.labelFontSize = 14.0,
         this.labelColor,
         this.labelBackgroundColor,
         this.labelShadowColor,
         this.labelHasShadow = true,
         this.hasLabel = false})
-      : assert(currentButton != null);
+      : super(onPressed: (){});
 
   Widget returnLabel() {
     return Container(
@@ -35,7 +35,7 @@ class UnicornButton extends FloatingActionButton {
               new BoxShadow(
                 color: this.labelShadowColor == null
                     ? Color.fromRGBO(204, 204, 204, 1.0)
-                    : this.labelShadowColor,
+                    : this.labelShadowColor!,
                 blurRadius: 3.0,
               ),
             ]
@@ -71,20 +71,20 @@ class UnicornDialer extends StatefulWidget {
   final int mainAnimationDuration;
   final double childPadding;
   final Color backgroundColor;
-  final Function onMainButtonPressed;
+  final Function? onMainButtonPressed;
   final Object parentHeroTag;
   final bool hasNotch;
 
   UnicornDialer(
-      {this.parentButton,
-        this.parentButtonBackground,
-        this.childButtons,
+      {required this.parentButton,
+        required this.parentButtonBackground,
+        required this.childButtons,
         this.onMainButtonPressed,
         this.orientation = 1,
         this.hasBackground = true,
         this.backgroundColor = Colors.white30,
         this.parentHeroTag = "parent",
-        this.finalButtonIcon,
+        required this.finalButtonIcon,
         this.animationDuration = 180,
 		this.mainAnimationDuration = 200,
         this.childPadding = 4.0,
@@ -96,8 +96,8 @@ class UnicornDialer extends StatefulWidget {
 
 class _UnicornDialer extends State<UnicornDialer>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
-  AnimationController _parentController;
+  late AnimationController _animationController;
+  late AnimationController _parentController;
 
   bool isOpen = false;
 
@@ -152,7 +152,7 @@ class _UnicornDialer extends State<UnicornDialer>
 
     var mainFAB = AnimatedBuilder(
         animation: this._parentController,
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return Transform(
               transform: new Matrix4.diagonal3(vector.Vector3(
                   _parentController.value,
@@ -166,14 +166,14 @@ class _UnicornDialer extends State<UnicornDialer>
                   onPressed: () {
                     mainActionButtonOnPressed();
                     if (widget.onMainButtonPressed != null) {
-                      widget.onMainButtonPressed();
+                      widget.onMainButtonPressed!();
                     }
                   },
                   child: !hasChildButtons
                       ? widget.parentButton
                       : AnimatedBuilder(
                       animation: this._animationController,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         return Transform(
                           transform: new Matrix4.rotationZ(
                               this._animationController.value * 0.8),
@@ -191,14 +191,14 @@ class _UnicornDialer extends State<UnicornDialer>
     if (hasChildButtons) {
       var mainFloatingButton = AnimatedBuilder(
           animation: this._animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return Transform.rotate(
                 angle: this._animationController.value * 0.8, child: mainFAB);
           });
 
       var childButtonsList = widget.childButtons == null ||
           widget.childButtons.length == 0
-          ? List<Widget>()
+          ? <Widget>[]
           : List.generate(widget.childButtons.length, (index) {
         var intervalValue = index == 0
             ? 0.9
@@ -213,7 +213,7 @@ class _UnicornDialer extends State<UnicornDialer>
             onPressed: () {
               if (widget.childButtons[index].currentButton.onPressed !=
                   null) {
-                widget.childButtons[index].currentButton.onPressed();
+                widget.childButtons[index].currentButton.onPressed!();
               }
 
               this._animationController.reverse();
